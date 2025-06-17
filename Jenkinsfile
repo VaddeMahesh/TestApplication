@@ -2,37 +2,32 @@ pipeline {
     agent any
 
     environment {
-        // Optional: Ensure node and npm are in PATH, adjust if needed
-        PATH = "/usr/local/bin:$PATH"
+        PATH = "/usr/local/bin:$PATH" // Adjust path if needed for node/npm
     }
 
     stages {
         stage('Checkout') {
             steps {
-                echo 'Checking out source code...'
                 checkout scm
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                echo 'Installing node modules...'
-                sh 'node -v'     // Shows Node.js version
-                sh 'npm -v'      // Shows npm version
-                sh 'npm install' // Installs Angular app dependencies
+                sh 'node -v'     // Verify Node.js version
+                sh 'npm -v'      // Verify npm version
+                sh 'npm install' // Install Angular dependencies
             }
         }
 
-        stage('Build Angular App') {
+        stage('Build') {
             steps {
-                echo 'Building Angular project...'
                 sh 'npm run build -- --configuration production'
             }
         }
 
         stage('Archive Artifacts') {
             steps {
-                echo 'Archiving dist folder...'
                 archiveArtifacts artifacts: 'dist/**', fingerprint: true
             }
         }
@@ -40,10 +35,10 @@ pipeline {
 
     post {
         success {
-            echo '✅ Build succeeded!'
+            echo '✅ Angular build completed successfully!'
         }
         failure {
-            echo '❌ Build failed!'
+            echo '❌ Build failed.'
         }
     }
 }
